@@ -3,9 +3,11 @@ package at.fiegl.studentenverwaltung.services;
 import at.fiegl.studentenverwaltung.domain.Student;
 import at.fiegl.studentenverwaltung.exceptions.StudentNichtGefunden;
 import at.fiegl.studentenverwaltung.repositories.DbZugriffStudenten;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service //Zum Initieren
 public class StudentServiceImpl implements StudentenService {
 
     private DbZugriffStudenten dbZugriffStudenten;
