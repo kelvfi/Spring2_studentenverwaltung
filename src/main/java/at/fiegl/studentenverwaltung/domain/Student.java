@@ -21,7 +21,7 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.SEQUENCE) //Generiert die ID
     private Long id;
 
-    @Size(min=4) //Automatische Validierung von Datenfeldern
+    @Size(min=2) //Automatische Validierung von Datenfeldern
     private String name;
 
     @Size(min = 4, max = 6)
