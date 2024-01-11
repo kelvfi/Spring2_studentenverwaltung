@@ -1,7 +1,7 @@
 package at.fiegl.studentenverwaltung;
 
 import at.fiegl.studentenverwaltung.domain.Student;
-import at.fiegl.studentenverwaltung.repositories.StudentJPARepo;
+import at.fiegl.studentenverwaltung.repositories.DbZugriffStudenten;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -11,8 +11,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class StudentenverwaltungApplication implements ApplicationRunner {
 
+	//Hier ist man schon entkoppelt weil man verwendet ja quasi nur ein Interface aber das interface erbt ja von der JPA
 	@Autowired
-	StudentJPARepo studentJPARepo;
+	DbZugriffStudenten dbZugriffStudenten;
 
 	public static void main(String[] args) {
 		SpringApplication.run(StudentenverwaltungApplication.class, args);
@@ -20,8 +21,9 @@ public class StudentenverwaltungApplication implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		this.studentJPARepo.save(new Student("Claudio Landerer", "6460"));
-		this.studentJPARepo.save(new Student("Günther Jauch", "6441"));
-		this.studentJPARepo.save(new Student("Maria Brunsteiner", "6450"));
+		//Somit haben wir schon entkoppelt durch das DbZugriffsInterface
+		this.dbZugriffStudenten.studentSpeichern(new Student("Claudio Landerer", "6460"));
+		this.dbZugriffStudenten.studentSpeichern(new Student("Günther Jauch", "6441"));
+		this.dbZugriffStudenten.studentSpeichern(new Student("Maria Brunsteiner", "6450"));
 	}
 }
