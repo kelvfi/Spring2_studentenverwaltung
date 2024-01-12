@@ -2,10 +2,16 @@ package at.fiegl.studentenverwaltung.controller;
 
 import at.fiegl.studentenverwaltung.domain.Student;
 import at.fiegl.studentenverwaltung.exceptions.StudentNichtGefunden;
+import at.fiegl.studentenverwaltung.exceptions.StudentValidierungFehlgeschlagen;
 import at.fiegl.studentenverwaltung.services.StudentenService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -28,9 +34,24 @@ public class StudentRestController {
         return ResponseEntity.ok(this.studentenService.alleStudenten());
     }
 
+    /*@RequestBody generiert automatisch ein Studenten Objekt,
+     wenn im Post request bestimmte Daten mitgegeben wurden.
+     Wenn die Validierung einen fehler hat gibt er diesen in
+     BindingResult mit an und speichert es.*/
     @PostMapping
-    public ResponseEntity<Student> studentEinfuegen(@RequestBody Student student) /*@RequestBody generiert automatisch ein Studenten Objekt, wenn im Post request bestimmte Daten mitgegeben wurden */ {
-        return ResponseEntity.ok(this.studentenService.studentEinfuegen(student));
+    public ResponseEntity<Student> studentEinfuegen(@Valid @RequestBody Student student, BindingResult bindingResult) throws StudentValidierungFehlgeschlagen {
+        String errors = "";
+
+        if (bindingResult.hasErrors()) {
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                errors += "Validierungsfehler für Objekt "+error.getObjectName()+
+                        " im Feld "+((FieldError)error).getField() + " mit folgendem Problem: " +
+                        error.getDefaultMessage();
+            }
+            throw new StudentValidierungFehlgeschlagen(errors);
+        } else {
+            return ResponseEntity.ok(this.studentenService.studentEinfuegen(student));
+        }
     }
 
     @DeleteMapping("/{id}")
